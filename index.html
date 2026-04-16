@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zalgrilska Milicija FC</title>
+<style>
+:root{
+  --green:#0f2f1f; --green2:#0a5c2b; --accent:#1fa34a; --accent2:#28c760; --dark:#063d1a; --card:#123d2a; --yellow:#f1c40f;
+}
+html, body {
+  min-height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--green);
+  color: #fff;
+  overflow-x: hidden;
+
+  min-height: 100vh;
+  outline: 5px solid red;
+}
+
+*{box-sizing:border-box}
+header{background:linear-gradient(90deg,var(--green2),var(--accent));padding:20px;text-align:center;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:32px;letter-spacing:1px}
+nav{display:flex;justify-content:center;background:var(--dark);flex-wrap:wrap}
+nav a{padding:14px 18px;color:#fff;text-decoration:none}
+nav a:hover{background:var(--accent)}
+
+.hero h2{font-size:42px;margin:0 0 10px}
+.hero p{opacity:.9}
+.section{padding:40px 20px;max-width:1100px;margin:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,.25)}
+footer{background:var(--dark);text-align:center;padding:16px}
+button{background:var(--accent);border:none;padding:10px 16px;color:#fff;cursor:pointer;border-radius:8px}
+button:hover{background:var(--accent2)}
+.badge{display:inline-block;background:rgba(255,255,255,.08);padding:4px 8px;border-radius:999px;margin-left:6px}
+
+/* Logo */
+.logo-wrap{display:flex;justify-content:center;margin-top:-40px}
+.crest{width:160px;height:190px;background:#0e3a27;border-radius:18px 18px 30px 30px;position:relative;border:4px solid #fff;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.crest:before{content:"";position:absolute;top:-12px;left:0;right:0;height:28px;background:var(--green2);border-top-left-radius:18px;border-top-right-radius:18px}
+.crest .band{position:absolute;top:16px;left:0;right:0;height:22px;background:var(--yellow)}
+.crest .body{position:absolute;top:44px;left:0;right:0;bottom:0;background:#fff;border-bottom-left-radius:26px;border-bottom-right-radius:26px}
+.crest svg{position:absolute;top:60px;left:50%;transform:translateX(-50%);width:120px;height:90px}
+
+/* Flare animation */
+.flare{position:absolute;bottom:0;width:6px;height:6px;background:var(--accent2);border-radius:50%;box-shadow:0 0 10px var(--accent2),0 0 30px var(--accent2);opacity:0;animation:rise 2.5s linear infinite}
+@keyframes rise{
+  0%{transform:translateY(0) scale(0.6);opacity:.0}
+  10%{opacity:1}
+  100%{transform:translateY(-180px) scale(1.2);opacity:0}
+}
+.flare.yellow{background:var(--yellow);box-shadow:0 0 10px var(--yellow),0 0 30px var(--yellow)}
+
+/* Table */
+.table-wrapper{
+  overflow-x:auto;
+}
+.table{
+  min-width:900px;
+  width:100%;
+}
+.table th,.table td{padding:10px;border-bottom:1px solid rgba(255,255,255,.1);text-align:left}
+.table th{opacity:.8}
+
+/* News */
+.news-item h4{margin:6px 0}
+.news-item small{opacity:.7}
+
+/* Squad cards */
+.player{display:flex;gap:12px;align-items:center}
+.avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#1f6b3b,#0e3a27)}
+.pos{opacity:.7}
+
+/* simple page switch */
+.page {
+  .page {
+  display: block;
+}
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+
+.hero {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.page.active {
+  display: block;
+}
+section {
+  position: relative;
+}
+/* Active nav */
+nav a.active{
+  background:var(--accent);
+  box-shadow:0 0 10px rgba(31,163,74,.6);
+}
+
+/* Card hover glow */
+.card{
+  transition:all .25s ease;
+}
+.card:hover{
+  transform:translateY(-6px) scale(1.02);
+  box-shadow:0 15px 40px rgba(0,0,0,.4),
+             0 0 20px rgba(40,199,96,.25);
+}
+
+/* Hero breathing glow */
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at 50% 20%, rgba(40,199,96,.15), transparent 70%);
+  animation:pulse 4s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes pulse{
+  0%,100%{opacity:.4}
+  50%{opacity:.8}
+}
+
+/* Button ripple */
+button{
+  position:relative;
+  overflow:hidden;
+}
+button span{
+  position:absolute;
+  border-radius:50%;
+  transform:scale(0);
+  animation:ripple .6s linear;
+  background:rgba(255,255,255,.5);
+}
+@keyframes ripple{
+  to{
+    transform:scale(4);
+    opacity:0;
+  }
+}
+
+/* subtle fog overlay */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at 20% 80%, rgba(255,255,255,.03), transparent 70%),
+             radial-gradient(circle at 80% 20%, rgba(255,255,255,.03), transparent 70%);
+  pointer-events:none;
+}
+.logo-img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:10px;
+  filter:drop-shadow(0 0 15px rgba(40,199,96,.6));
+  transition:.3s;
+}
+.logo-img:hover{
+  transform:scale(1.05);
+  filter:drop-shadow(0 0 25px rgba(40,199,96,1));
+}
+#banners{
+  position:absolute;
+  bottom:20px;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  pointer-events:none;
+}
+
+.banner{
+  padding:10px 20px;
+  background:rgba(0,0,0,.6);
+  border:2px solid var(--accent);
+  animation:wave 2s infinite ease-in-out;
+  font-weight:bold;
+}
+
+@keyframes wave{
+  0%,100%{transform:rotate(-2deg)}
+  50%{transform:rotate(2deg)}
+}
+
+/* chant text animation */
+#chantText{
+  animation:chantPulse 1s infinite;
+}
+input{
+  width:50px;
+  background:#0b2a1b;
+  border:1px solid #1fa34a;
+  color:#fff;
+  border-radius:6px;
+  padding:4px;
+}
+@keyframes chantPulse{
+  0%,100%{opacity:.6}
+  50%{opacity:1; transform:scale(1.05)}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Zalgrilska Milicija FC</h1>
+  <p>"We are heard before we are seen" <span class="badge">Z.M.F.C.</span></p>
+</header>
+
+
+
+<div class="hero">
+  <div id="flares"></div>
+  <h2>Maze Bank Arena</h2>
+  <p>Home of the Zalgrilifa</p>
+  <button onclick="igniteFlares()">Ignite Flares</button>
+</div>
+
+<div class="logo-wrap">
+  <div class="crest">
+  <img src="Seven.png" alt="Zalgrilska Milicija Logo" class="logo-img">
+</div>
+</div>
+<div id="banners"></div>
+
+<section id="dashboard" class="section page">
+  <h2>Club Dashboard</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Recent Form</h3>
+      <div id="formBox"></div>
+    </div>
+  </div>
+
+  <h2>League Table</h2>
+  <button onclick="toggleAdmin()">Admin Mode</button>
+
+  
+
+  <table class="table" id="leagueTable">
+    <thead>
+      <tr>
+        <th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th>
+        <th>GF</th><th>GA</th><th>Pts</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table></section>
+
+<section id="team" class="section">
+  <h2 id="teamName"></h2>
+  <div class="card">
+    <p><strong>Played:</strong> <span id="tP"></span></p>
+    <p><strong>Wins:</strong> <span id="tW"></span></p>
+    <p><strong>Draws:</strong> <span id="tD"></span></p>
+    <p><strong>Losses:</strong> <span id="tL"></span></p>
+    <p><strong>Goals:</strong> <span id="tGF"></span> : <span id="tGA"></span></p>
+    <p><strong>Points:</strong> <span id="tPts"></span></p>
+
+    <button onclick="showPage(event,'dashboard')">Back</button>
+  </div>
+</section>
+
+
+<!-- HOME -->
+<section id="home" class="section page active">
+  <div class="grid">
+    <div class="card">
+      <h3>About</h3>
+      <p>Green identity, dragon symbol, and a relentless home atmosphere define Milicija.</p>
+    </div>
+    <div class="card">
+      <h3>Stadium</h3>
+      <p>Maze Bank Arena — Capacity 26,000 — “The Vault”.</p>
+    </div>
+    <div class="card">
+      <h3>Fans</h3>
+      <p>Zalgrilifa bring flares, banners, and thunderous chants.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FIXTURES -->
+<section id="fixtures" class="section page">
+  <h2>Fixtures</h2>
+  <table class="table" id="fixturesTable">
+    <thead><tr><th>Date</th><th>Match</th><th>Venue</th><th>Score</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<!-- NEWS -->
+<section id="news" class="section page">
+  <h2>Latest News</h2>
+  <div id="newsList" class="grid"></div>
+</section>
+
+<!-- SQUAD -->
+<section id="squad" class="section page">
+  <h2>Squad</h2>
+  <div class="grid" id="players"></div>
+</section>
+
+<footer>
+  <p>© 2026 Zalgrilska Milicija FC</p>
+</footer>
+
+<script>
+// page switch
+function showPage(e, id){
+  document.querySelectorAll('.page').forEach(p=>{
+    p.classList.remove('active');
+  });
+
+  document.getElementById(id).classList.add('active');
+
+  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
+
+  if(e?.target) e.target.classList.add('active');
+}
+
+document.querySelectorAll("button").forEach(btn=>{
+  btn.addEventListener("click",function(e){
+    const circle=document.createElement("span");
+    const size=Math.max(this.clientWidth,this.clientHeight);
+    circle.style.width=circle.style.height=size+"px";
+    circle.style.left=e.offsetX-size/2+"px";
+    circle.style.top=e.offsetY-size/2+"px";
+    this.appendChild(circle);
+    setTimeout(()=>circle.remove(),600);
+  });
+});
+
+// flares
+function igniteFlares(){
+  const box = document.getElementById('flares');
+  for(let i=0;i<40;i++){
+    const f=document.createElement('div');
+    f.className='flare '+(Math.random()>0.5?'yellow':'');
+    f.style.left=Math.random()*100+'%';
+    f.style.animationDelay=(Math.random()*1.5)+'s';
+    box.appendChild(f);
+    setTimeout(()=>f.remove(),2600);
+  }
+}
+
+let adminMode = false;
+
+function toggleAdmin(){
+  const pass = prompt("Enter admin password:");
+
+  if(pass === "zmfc2026"){   // change this if you want
+    adminMode = !adminMode;
+    renderTable();
+    renderFixtures();
+    alert(adminMode ? "Admin mode ON" : "Admin mode OFF");
+  } else {
+    alert("Wrong password!");
+  }
+}
+
+// FULL DATA
+let teams = [
+{team:"FK Sarajevo",p:4,w:4,d:0,l:0,gf:24,ga:2},
+{team:"Gotham Bats",p:4,w:3,d:1,l:0,gf:13,ga:1},
+{team:"Southmoke",p:4,w:3,d:1,l:0,gf:14,ga:6},
+{team:"FK Zmajevo Gnijezdo",p:4,w:2,d:2,l:0,gf:4,ga:2},
+{team:"FK Rudar Zenica",p:4,w:2,d:1,l:1,gf:8,ga:3},
+{team:"FK ŽELJEZNIČAR",p:4,w:2,d:1,l:1,gf:11,ga:9},
+{team:"Queen of Mokušnice F.C",p:4,w:2,d:0,l:2,gf:14,ga:4},
+{team:"Neki Novi Klinci",p:4,w:2,d:0,l:2,gf:4,ga:5},
+{team:"Sv. Jovan",p:4,w:2,d:0,l:2,gf:4,ga:5},
+{team:"FK Brod 94",p:4,w:2,d:0,l:2,gf:4,ga:9},
+{team:"Zalgrilska Milicija FC",p:4,w:1,d:2,l:1,gf:15,ga:7},
+{team:"NK Real Zenica",p:4,w:1,d:2,l:1,gf:7,ga:5},
+{team:"F.K. Gule",p:4,w:1,d:2,l:1,gf:5,ga:4},
+{team:"Lasko",p:4,w:1,d:0,l:3,gf:3,ga:6},
+{team:"B FC Tuzla City B",p:4,w:1,d:0,l:3,gf:3,ga:14},
+{team:"B CF Mean Machine B",p:4,w:0,d:2,l:2,gf:3,ga:7},
+{team:"FC Steel Zenica",p:4,w:0,d:0,l:4,gf:3,ga:11},
+{team:"VIRGIN",p:4,w:0,d:0,l:4,gf:1,ga:40}
+];
+
+// calculate points
+function calcPts(t){
+  return t.w*3 + t.d;
+}
+
+function renderTable(){
+  const tbody = document.querySelector("#leagueTable tbody");
+  tbody.innerHTML="";
+
+  // sort
+  teams.sort((a,b)=>{
+    return calcPts(b)-calcPts(a) || (b.gf-b.ga)-(a.gf-a.ga);
+  });
+
+  teams.forEach((t,i)=>{
+    const tr=document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${i+1}</td>
+      <td>${t.team}</td>
+      ${adminMode ? `
+        <td style="cursor:pointer;color:#28c760;font-weight:bold"
+      onclick="openTeam(${i})">${t.team}</td>
+        <td><input value="${t.p}" onchange="update(${i},'p',this.value)"></td>
+        <td><input value="${t.w}" onchange="update(${i},'w',this.value)"></td>
+        <td><input value="${t.d}" onchange="update(${i},'d',this.value)"></td>
+        <td><input value="${t.l}" onchange="update(${i},'l',this.value)"></td>
+        <td><input value="${t.gf}" onchange="update(${i},'gf',this.value)"></td>
+        <td><input value="${t.ga}" onchange="update(${i},'ga',this.value)"></td>
+      ` : `
+      <td style="cursor:pointer;color:#28c760;font-weight:bold"
+      onclick="openTeam(${i})">${t.team}</td>
+        <td>${t.p}</td>
+        <td>${t.w}</td>
+        <td>${t.d}</td>
+        <td>${t.l}</td>
+        <td>${t.gf}</td>
+        <td>${t.ga}</td>
+      `}
+      <td>${calcPts(t)}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+function update(i,field,value){
+  teams[i][field] = Number(value);
+  renderTable();
+}
+
+renderTable();
+
+// fixtures data
+const fixtures = [
+  {id:1,date:'17 APR',home:'Milicija',away:'B FC Tuzla city',venue:'Home',score:'-',status:'UPCOMING'},
+  {id:2,date:'19 APR',home:'Fk Brod 94',away:'Milicija',venue:'Away',score:'-',status:'UPCOMING'},
+  {id:3,date:'22 APR',home:'Milicija',away:'Southmoke',venue:'Home',score:'-',status:'UPCOMING'}
+];
+const ftBody=document.querySelector('#fixturesTable tbody');
+fixtures.forEach(g=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${g.date}</td><td>${g.match}</td><td>${g.venue}</td><td>${g.score}</td>`;
+  ftBody.appendChild(tr);
+});
+
+function renderFixtures(){
+  const ftBody = document.querySelector('#fixturesTable tbody');
+  ftBody.innerHTML = "";
+
+  fixtures.forEach((g,i)=>{
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td>${g.date}</td>
+      <td>${g.home} vs ${g.away}</td>
+      <td>${g.venue}</td>
+      <td>
+        ${adminMode ? `
+          <input value="${g.score}" onchange="updateFixture(${i},'score',this.value)">
+          <select onchange="updateFixture(${i},'status',this.value)">
+            <option ${g.status==='UPCOMING'?'selected':''}>UPCOMING</option>
+            <option ${g.status==='LIVE'?'selected':''}>LIVE</option>
+            <option ${g.status==='FINISHED'?'selected':''}>FINISHED</option>
+          </select>
+        ` : `
+          ${g.score} <span style="opacity:.7">(${g.status})</span>
+        `}
+      </td>
+    `;
+
+    ftBody.appendChild(tr);
+  });
+}
+
+function updateFixture(i,field,value){
+  fixtures[i][field] = value;
+  renderFixtures();
+}
+
+renderFixtures();
+
+// news
+const news=[
+  {title:'Milicija signs new striker',date:'Mar 10',text:'A powerful forward joins the green line.'},
+  {title:'Derby sold out',date:'Mar 8',text:'Maze Bank Arena reaches full capacity.'},
+  {title:'New kit revealed',date:'Mar 1',text:'Green-white design with dragon crest.'}
+];
+const newsList=document.getElementById('newsList');
+news.forEach(n=>{
+  const d=document.createElement('div');
+  d.className='card news-item';
+  d.innerHTML=`<small>${n.date}</small><h4>${n.title}</h4><p>${n.text}</p>`;
+  newsList.appendChild(d);
+});
+
+// squad
+const players = [
+"Mulamustafić","Đurović","Smedt","Todorević",
+"Mašinović","Karleuša","FuLin","Kruzel",
+"Kukavića","Machoqueiro","Margaritis"
+];
+
+const playersBox = document.getElementById("players");
+
+players.forEach((name,i)=>{
+  const p = document.createElement("div");
+  p.className="card";
+
+  p.innerHTML = `
+    <div class="player">
+      <div class="avatar"></div>
+      <div>
+        <strong>#${i+1} ${name}</strong>
+        <div class="pos">Zalgrilska Milicija</div>
+      </div>
+    </div>
+  `;
+
+  playersBox.appendChild(p);
+});
+
+function openTeam(i){
+  const t = teams[i];
+
+  const url = `#club-${encodeURIComponent(t.team)}`;
+
+  window.location.hash = url;
+
+  showClubPage(t);
+}
+
+function showClubPage(t){
+  
+
+  document.getElementById("teamName").textContent = t.team;
+
+  document.getElementById("tP").textContent = t.p;
+  document.getElementById("tW").textContent = t.w;
+  document.getElementById("tD").textContent = t.d;
+  document.getElementById("tL").textContent = t.l;
+  document.getElementById("tGF").textContent = t.gf;
+  document.getElementById("tGA").textContent = t.ga;
+  document.getElementById("tPts").textContent = calcPts(t);
+
+  showPage({target: document.querySelector("nav a")}, "team");
+}
+
+// FORM (W/D/L bubbles)
+const form = ['L','D','W','D'];
+const formBox = document.getElementById('formBox');
+
+form.forEach(r=>{
+  const el = document.createElement('span');
+  el.textContent = r;
+  el.style.marginRight='6px';
+  el.style.padding='6px 10px';
+  el.style.borderRadius='6px';
+  el.style.fontWeight='bold';
+
+  if(r==='W') el.style.background='#28c760';
+  if(r==='D') el.style.background='#f1c40f';
+  if(r==='L') el.style.background='#e74c3c';
+
+  formBox.appendChild(el);
+});
+
+// TABLE
+
+
+window.addEventListener("load", () => {
+  const hash = decodeURIComponent(location.hash);
+
+  if(hash.startsWith("#club-")){
+    const name = hash.replace("#club-","");
+    const team = teams.find(t => t.team === name);
+
+    if(team) showClubPage(team);
+  }
+});
+
+
+</script>
+
+</body>
+</html>
