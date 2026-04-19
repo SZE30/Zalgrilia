@@ -217,6 +217,8 @@ input{
 </header>
 
 
+<button onclick="quickUpdate()">🔄 Refresh Table</button>
+
 
 <div class="hero">
   <div id="flares"></div>
@@ -227,7 +229,7 @@ input{
 
 <div class="logo-wrap">
   <div class="crest">
-  <img src="seven.png" alt="Zalgrilska Milicija Logo" class="logo-img">
+  <img src="Seven.png" alt="Zalgrilska Milicija Logo" class="logo-img">
 </div>
 </div>
 <div id="banners"></div>
@@ -245,7 +247,11 @@ input{
   <h2>League Table</h2>
   <button onclick="toggleAdmin()">Admin Mode</button>
 
-  
+  <audio id="bgChant" loop>
+    <source src="n.mp3" type="audio/mpeg">
+  </audio>
+
+  <button onclick="toggleChants()">🔊 Atmosphere</button>
 
   <table class="table" id="leagueTable">
     <thead>
@@ -290,6 +296,15 @@ input{
   </div>
 </section>
 
+<div class="card" id="importCard" style="display:none;">
+  <h3>Import Table</h3>
+  <textarea id="importBox" placeholder="Paste Trophy Manager table..." 
+  style="width:100%; height:120px; background:#0b2a1b; color:#fff;"></textarea>
+  <br><br>
+  <button onclick="importTable()">Import</button>
+</div>
+
+
 <!-- FIXTURES -->
 <section id="fixtures" class="section page">
   <h2>Fixtures</h2>
@@ -298,6 +313,8 @@ input{
     <tbody></tbody>
   </table>
 </section>
+
+<div id="banners"></div>
 
 <!-- NEWS -->
 <section id="news" class="section page">
@@ -329,6 +346,13 @@ function showPage(e, id){
   if(e?.target) e.target.classList.add('active');
 }
 
+document.addEventListener("click", () => {
+  if(!chantPlaying){
+    toggleChants();
+  }
+}, { once:true });
+
+
 document.querySelectorAll("button").forEach(btn=>{
   btn.addEventListener("click",function(e){
     const circle=document.createElement("span");
@@ -354,15 +378,81 @@ function igniteFlares(){
   }
 }
 
+
+function quickUpdate(){
+  const saved = localStorage.getItem("zmfc_table_raw");
+
+  if(saved){
+    parseTable(saved);
+  } else {
+    alert("No saved table yet!");
+  }
+}
+
+setInterval(()=>{
+  const saved = localStorage.getItem("zmfc_table_raw");
+  if(saved) parseTable(saved);
+}, 30000);
+
+let chantPlaying = false;
+
+function toggleChants(){
+  const audio = document.getElementById("bgChant");
+
+  if(!chantPlaying){
+    audio.volume = 0.3; // subtle background
+    audio.play();
+    chantPlaying = true;
+  } else {
+    audio.pause();
+    chantPlaying = false;
+  }
+}
+
+
+const bannerTexts = [
+  "ULTRAS MILICIJA",
+  "HEARD BEFORE SEEN",
+  "DEFEND THE VAULT",
+  "GREEN ARMY",
+  "DRAGONS RISE",
+  "THIS IS OUR CITY"
+];
+
+function spawnBanner(){
+  const container = document.getElementById("banners");
+
+  const b = document.createElement("div");
+  b.className = "banner";
+  b.textContent = bannerTexts[Math.floor(Math.random()*bannerTexts.length)];
+
+  // random position
+  b.style.position = "absolute";
+  b.style.left = Math.random()*80 + "%";
+  b.style.bottom = Math.random()*40 + "px";
+
+  container.appendChild(b);
+
+  setTimeout(()=>b.remove(), 4000);
+}
+
+// loop banners
+setInterval(spawnBanner, 2000);
+
+
 let adminMode = false;
 
 function toggleAdmin(){
   const pass = prompt("Enter admin password:");
 
-  if(pass === "zmfc2026"){   // change this if you want
+  if(pass === "zmfc2026"){
     adminMode = !adminMode;
+
+    document.getElementById("importCard").style.display = adminMode ? "block" : "none";
+
     renderTable();
     renderFixtures();
+
     alert(adminMode ? "Admin mode ON" : "Admin mode OFF");
   } else {
     alert("Wrong password!");
@@ -395,6 +485,78 @@ let teams = [
 function calcPts(t){
   return t.w*3 + t.d;
 }
+
+function importTable(){
+  const text = document.getElementById("importBox").value.trim();
+
+  if(!text){
+    alert("Paste table first!");
+    return;
+  }
+
+  const lines = text.split("\n");
+
+  teams = [];
+
+  lines.forEach(line=>{
+    const parts = line.trim().split(/\s+/);
+
+    // skip broken lines
+    if(parts.length < 8) return;
+
+    const teamName = parts.slice(1, parts.length-6).join(" ");
+
+    teams.push({
+      team: teamName,
+      gp: +parts[parts.length-7],
+      p: +parts[parts.length-6],
+      w: +parts[parts.length-5],
+      d: +parts[parts.length-4],
+      l: +parts[parts.length-3],
+      gf: +parts[parts.length-2],
+      ga: +parts[parts.length-1]
+    });
+  });
+
+  renderTable();
+  renderRivals();
+
+  alert("Table imported!");
+}
+
+function parseTable(text){
+  const lines = text.split("\n");
+
+  teams = [];
+
+  lines.forEach(line=>{
+    const parts = line.trim().split(/\s+/);
+    if(parts.length < 8) return;
+
+    const teamName = parts.slice(1, parts.length-6).join(" ");
+
+    teams.push({
+      team: teamName,
+      p: +parts[parts.length-6],
+      w: +parts[parts.length-5],
+      d: +parts[parts.length-4],
+      l: +parts[parts.length-3],
+      gf: +parts[parts.length-2],
+      ga: +parts[parts.length-1]
+    });
+  });
+
+  renderTable();
+}
+
+window.addEventListener("load", () => {
+  const saved = localStorage.getItem("zmfc_table_raw");
+
+  if(saved){
+    parseTable(saved);
+  }
+});
+
 
 function renderTable(){
   const tbody = document.querySelector("#leagueTable tbody");
